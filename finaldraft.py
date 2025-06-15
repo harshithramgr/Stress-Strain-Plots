@@ -13,6 +13,7 @@ if USE_GRID_SEARCH:
     from sklearn.model_selection import KFold
     from sklearn.metrics import mean_squared_error
 
+
     def pick_best_lambda(x, y,
                          lam_grid=np.logspace(-9, 0.5, 50),
                          k=5, random_state=0):
@@ -96,7 +97,7 @@ def smoothen_stress_strain_plot(strain_sorted, stress, smoothing_factor=0.000000
     plt.plot(strain_sorted, smoothed_stress_spline,
              label="Smoothed curve", linewidth=4)
 
-    # Plot raw data
+    # Plot raw datasamples
     plt.plot(strain_sorted, stress,
              label="Raw curve", linewidth=0.5)
 
@@ -123,6 +124,7 @@ def smoothen_stress_strain_plot(strain_sorted, stress, smoothing_factor=0.000000
     plt.legend()
     plt.show()
 
+
     # Calculate and display analysis results
     if first_point_found:
         slope_line_a = (point_a_y - smoothed_stress[0]) / (point_a_x - strain_sorted[0])
@@ -138,12 +140,12 @@ def smoothen_stress_strain_plot(strain_sorted, stress, smoothing_factor=0.000000
 #  ORIGINAL main() — only lines added are the λ selection + print
 # ------------------------------------------------------------------
 def main():
-    # Load data from CSV file
-    values = pd.read_csv('askdatasample6.csv')
+    # Load datasamples from CSV file
+    values = pd.read_csv('datasamples/askdatasample1.csv')
 
     # Check for duplicates
     values_cleaned = values.sort_values(by=values.columns[0]) \
-                           .drop_duplicates(subset=values.columns[0], keep='first')
+        .drop_duplicates(subset=values.columns[0], keep='first')
 
     # Extract strain and stress columns
     strain = values_cleaned['Strain'].values
