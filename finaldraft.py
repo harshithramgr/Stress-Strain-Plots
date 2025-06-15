@@ -135,10 +135,6 @@ def smoothen_stress_strain_plot(strain_sorted, stress, smoothing_factor=0.000000
             print(f"Slope of the second line is {slope_line_b}")
             print(f"The residual is {point_b_y}")
 
-
-# ------------------------------------------------------------------
-#  ORIGINAL main() — only lines added are the λ selection + print
-# ------------------------------------------------------------------
 def main():
     # Load datasamples from CSV file
     values = pd.read_csv('datasamples/askdatasample1.csv')
