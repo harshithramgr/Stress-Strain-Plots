@@ -41,9 +41,6 @@ else:
     pick_best_lambda = lambda x, y: None
 
 
-# ------------------------------------------------------------------
-#  ORIGINAL FUNCTION (unchanged except docstring comment)
-# ------------------------------------------------------------------
 def smoothen_stress_strain_plot(strain_sorted, stress, smoothing_factor=0.0000000005):
     """
     Plots a smoothed stress–strain curve, finds two critical points,
