@@ -130,30 +130,62 @@ def smoothen_stress_strain_plot(strain_sorted, stress, smoothing_factor=0.000000
     plt.close()
 
 
-def main():
-    folder = Path("./curve_pairs")
-    files = [f for f in os.listdir(folder) if f.endswith(".xlsx")]
 
-    # Sort files numerically: e.g., Curve 1.xlsx, Curve 2.xlsx, ...
+
+from pathlib import Path
+import os
+import pandas as pd
+
+def main():
+    file_to_delete = Path("coefficients.csv")  # put your path here
+    file_to_delete.unlink(missing_ok=True)
+
+    folder = Path("./curve_pairs")
+    files  = [f for f in os.listdir(folder) if f.endswith(".xlsx")]
+
+
     sorted_files = sorted(files, key=lambda x: int(re.search(r'\d+', x).group()))
 
+    error_count   = 0
+    error_details = []          # collect (file, message)
+
     for file in sorted_files:
-        filepath = folder / file
-        print(f"\nProcessing: {filepath}")
+        try:
+            filepath = folder / file
+            print(f"\nProcessing: {filepath}")
 
-        df = pd.read_excel(filepath)
-        df = df.sort_values(by=df.columns[0]).drop_duplicates(subset=df.columns[0], keep="first")
+            df = pd.read_excel(filepath)
+            df = (
+                df.sort_values(by=df.columns[0])
+                  .drop_duplicates(subset=df.columns[0], keep="first")
+            )
 
-        strain = df["Strain"].values
-        stress = df["Stress"].values
+            strain = df["Strain"].values
+            stress = df["Stress"].values
 
-        lam = pick_best_lambda(strain, stress)
+            lam = pick_best_lambda(strain, stress)
 
-        save_path = Path("plots") / f"{file}.png"
-        save_path.parent.mkdir(exist_ok=True)
+            save_path = Path("plots") / f"{file}.png"
+            save_path.parent.mkdir(exist_ok=True)
 
-        smoothen_stress_strain_plot(strain, stress, smoothing_factor=lam, save_path=save_path)
+            smoothen_stress_strain_plot(
+                strain, stress, smoothing_factor=lam, save_path=save_path
+            )
 
+        except Exception as e:
+            error_count += 1
+            error_details.append((file, str(e)))
+            print(f"❌  Skipped {file} — {e}")
+
+    # ---------- summary ----------
+    print("\nFinished.")
+    print(f"✔️  Success: {len(sorted_files) - error_count}")
+    print(f"❌  Errors : {error_count}")
+
+    if error_details:
+        print("\nFiles with errors:")
+        for fname, msg in error_details:
+            print(f"  • {fname}: {msg}")
 
 if __name__ == "__main__":
     main()
